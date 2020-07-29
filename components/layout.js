@@ -28,10 +28,10 @@ export default function Layout ({ children, home }) {
       </Head>
       <header className={styles.header}>
         {
-          home ? (// -----------------
+          home ? (// ----------------- 1
             <> 
               <img 
-                src='/images/prorifle.jpg'
+                src='/images/profile.jpg'
                 className={`
                   ${styles.headerHomeImage}
                   ${utilStyles.borderCircle}
@@ -42,12 +42,12 @@ export default function Layout ({ children, home }) {
                 {name} 
               </h1>
             </>
-          ) : ( //-----------------------
+          ) : ( //----------------------- 2
             <>
               <Link href='/'>
                 <a>
                   <img 
-                    src='/images/prorifle.jpg'
+                    src='/images/profile.jpg'
                     className={`
                       ${styles.headerHomeImage}
                       ${utilStyles.borderCircle}
