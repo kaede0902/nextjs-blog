@@ -11,10 +11,10 @@ export default function Layout ({ children, home }) {
   return ( 
     <div className={styles.container}>
       <Head>
-        <link rel="icon" href="/favicon.ico">
+        <link rel="icon" href="/favicon.ico"/>
         <meta
           property='og:image'
-          content=`{
+          content={`
             https://og-image.now.sh/
             ${encodeURI(
               siteTitle
@@ -78,7 +78,7 @@ export default function Layout ({ children, home }) {
         !home && (
           <div className= {styles.backToHome}>
             <Link href='/'>
-              <a> <- Back to home
+              <a> ← Back to home </a>
             </Link>
           </div>
         )
