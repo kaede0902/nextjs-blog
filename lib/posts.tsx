@@ -1,28 +1,32 @@
 import fs from 'fs'
 import path from 'path'
 import matter from 'gray-matter'
-import fetch from 'node-fetch'
+import remark from 'remark'
+import html from 'remark-html'
 
-// current directory + postsをjoinして入れる
 const postsDirectory = path.join(process.cwd(), 'posts')
 
-// ファイル名からIDを作ってmeta sectionから
-// meta dataのheaderを作る
 export function getSortedPostsData() {
-  // `posts/` 以下のfilesを読み取り, 入れる
-  const fileNames = fs.readdirSync(postsDirectory);
-
-  // Execute to each array index from each files
+  // Get file names under /posts
+  const fileNames = fs.readdirSync(postsDirectory)
   const allPostsData = fileNames.map(fileName => {
-    const id = fileName.replace(/\.md$/, '');
-    const fullPath = path.join(postsDirectory, fileName);
-    const fileContents = fs.readFileSync(fullPath, 'utf8');
-    const matterResult = matter(fileContents);
+    // Remove ".md" from file name to get id
+    const id = fileName.replace(/\.md$/, '')
+
+    // Read markdown file as string
+    const fullPath = path.join(postsDirectory, fileName)
+    const fileContents = fs.readFileSync(fullPath, 'utf8')
+
+    // Use gray-matter to parse the post metadata section
+    const matterResult = matter(fileContents)
+
+    // Combine the data with the id
     return {
-      id, 
-      ...matterResult.data
+      id,
+      ...(matterResult.data as { date: string; title: string })
     }
   })
+  // Sort posts by date
   return allPostsData.sort((a, b) => {
     if (a.date < b.date) {
       return 1
@@ -37,23 +41,29 @@ export function getAllPostIds() {
   return fileNames.map(fileName => {
     return {
       params: {
-        // 正規表現で末尾の.md を無くす
         id: fileName.replace(/\.md$/, '')
       }
     }
   })
 }
 
-export function getPostData(id) {
-  // path と引数の id を join ,  utf8 と matter をかける
+export async function getPostData(id: string) {
   const fullPath = path.join(postsDirectory, `${id}.md`)
   const fileContents = fs.readFileSync(fullPath, 'utf8')
+
+  // Use gray-matter to parse the post metadata section
   const matterResult = matter(fileContents)
 
+  // Use remark to convert markdown into HTML string
+  const processedContent = await remark()
+    .use(html)
+    .process(matterResult.content)
+  const contentHtml = processedContent.toString()
+
+  // Combine the data with the id and contentHtml
   return {
     id,
-    ...matterResult.data
+    contentHtml,
+    ...(matterResult.data as { date: string; title: string })
   }
 }
-
-

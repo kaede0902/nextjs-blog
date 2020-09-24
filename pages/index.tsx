@@ -37,7 +37,7 @@ export default function Home({
               </Link>
               <br />
               <small className={utilStyles.lightText}>
-                <Date dateString={'2020-01-02'} />
+                <Date dateString={date} />
               </small>
             </li>
           ))}
